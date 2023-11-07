@@ -1,0 +1,1 @@
+ WHERE name = ? and password = ?

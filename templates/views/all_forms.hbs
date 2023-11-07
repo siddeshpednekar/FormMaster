@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Forms Display</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #121212;
+      color: #ffffff;
+    }
+
+    #forms-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .form {
+      background-color: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #663ab5;
+    }
+
+    .question {
+      margin-bottom: 10px;
+    }
+
+    .question h3 {
+      font-size: 20px;
+      margin-bottom: 5px;
+      color: #663ab5;
+    }
+
+    .question p {
+      margin: 0;
+      font-size: 16px;
+      color: #ffffff;
+    }
+
+    .edit-button {
+      background-color: #663ab5;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+button{
+      background-color: #663ab5;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    .input-box {
+      width: 100%;
+      padding: 5px;
+      background-color: #2d2d2d;
+      color: #ffffff;
+      border: 1px solid #663ab5;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="forms-container"></div>
+
+  <script>
+    async function fetchData() {
+      try {
+        const response = await fetch('http://localhost:3000/users'); // Update URL accordingly
+        const data = await response.json();
+
+        // Organize data by form and question
+        const formsData = data.reduce((acc, item) => {
+          if (!acc[item.form_id]) {
+            acc[item.form_id] = { form_name: item.form_name, questions: [] };
+          }
+
+          const question = acc[item.form_id].questions.find(q => q.question_id === item.question_id);
+          if (!question) {
+            acc[item.form_id].questions.push({
+              question_id: item.question_id,
+              question_text: item.question_text,
+              options: [item.option_text]
+            });
+          } else {
+            question.options.push(item.option_text);
+          }
+
+          return acc;
+        }, {});
+
+        const formsContainer = document.getElementById('forms-container');
+        for (const formId in formsData) {
+          const form = formsData[formId];
+          const formDiv = document.createElement('div');
+          formDiv.classList.add('form');
+          formDiv.innerHTML = `<h2>${form.form_name}</h2>`;
+
+          for (let i = 0; i < form.questions.length; i++) {
+            const question = form.questions[i];
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+            questionDiv.innerHTML = `<h3>Question ${i + 1}: <span id="question-text-${question.question_id}">${question.question_text}</span></h3>`;
+
+            for (const option of question.options) {
+              questionDiv.innerHTML += `<p>Option: ${option}</p>`;
+            }
+
+            formDiv.appendChild(questionDiv);
+          }
+
+          const editButton = document.createElement('button');
+          editButton.classList.add('edit-button');
+          editButton.innerText = 'Edit Form';
+          editButton.addEventListener('click', () => handleEditForm(formId, form.questions));
+          formDiv.appendChild(editButton);
+
+          formsContainer.appendChild(formDiv);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    function handleEditForm(formId, questions) {
+      questions.forEach((question, index) => {
+        const questionTextElement = document.getElementById(`question-text-${question.question_id}`);
+        const inputElement = document.createElement('input');
+        inputElement.type = 'text';
+        inputElement.value = question.question_text;
+        inputElement.classList.add('input-box');
+        questionTextElement.innerHTML = '';
+        questionTextElement.appendChild(inputElement);
+
+        const optionElements = [];
+        question.options.forEach((option) => {
+          const optionInput = document.createElement('input');
+          optionInput.type = 'text';
+          optionInput.value = option;
+          optionInput.classList.add('input-box');
+          optionElements.push(optionInput);
+        });
+
+        const selectCorrectAnswer = document.createElement('select');
+        for (let i = 1; i <= optionElements.length; i++) {
+          const option = document.createElement('option');
+          option.value = i;
+          option.text = `Option ${i}`;
+          selectCorrectAnswer.appendChild(option);
+        }
+
+        const addOptionButton = document.createElement('button');
+        addOptionButton.innerText = 'Add Option';
+        addOptionButton.addEventListener('click', () => handleAddOption(optionElements, questionTextElement));
+        questionTextElement.appendChild(addOptionButton);
+
+        optionElements.forEach((optionElement) => {
+          questionTextElement.appendChild(optionElement);
+        });
+
+       
+
+        const correctAnswerInput = document.createElement('input');
+        correctAnswerInput.type = 'number';
+        correctAnswerInput.value = 0; // Default to the first option
+        correctAnswerInput.classList.add('input-box');
+        questionTextElement.appendChild(correctAnswerInput);
+
+        const saveButton = document.createElement('button');
+        saveButton.innerText = 'Save';
+        saveButton.addEventListener('click', () => handleSaveChanges(formId, question.question_id, inputElement, optionElements, correctAnswerInput));
+        questionTextElement.appendChild(saveButton);
+
+
+        const removeQuestionButton = document.createElement('button');
+        removeQuestionButton.innerText = 'Remove Question';
+        removeQuestionButton.addEventListener('click', () => handleRemoveQuestion(formId, question.question_id));
+        questionTextElement.appendChild(removeQuestionButton);
+
+        const addNewQuestionButton = document.createElement('button');
+        addNewQuestionButton.innerText = 'Add New Question';
+        addNewQuestionButton.addEventListener('click', () => handleAddNewQuestion(formId, questionTextElement));
+        questionTextElement.appendChild(addNewQuestionButton);
+      });
+    }
+
+    function handleAddNewQuestion(formId, questionTextElement) {
+
+      const formNameElement = document.querySelector('.form h2');
+      if (formNameElement) {
+
+        window.location.href = `http://localhost:3000/forms?formName=${encodeURIComponent(currentFormName)}`;
+      } else {
+        console.error('Form name not found in the HTML structure.');
+      }
+    }
+
+
+
+
+    function handleAddOption(optionElements, questionTextElement) {
+      const newOptionInput = document.createElement('input');
+      newOptionInput.type = 'text';
+      newOptionInput.value = '';
+      newOptionInput.classList.add('input-box');
+      optionElements.push(newOptionInput);
+      questionTextElement.insertBefore(newOptionInput, questionTextElement.lastChild.previousSibling); 
+    }
+
+    function handleRemoveQuestion(formId, questionId) {
+      fetch('/remove-question', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ formId, questionId }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log('Question removed successfully.');
+          } else {
+            throw new Error('Failed to remove the question.');
+          }
+        })
+        .catch((error) => {
+          console.error('Error removing question:', error);
+        });
+      location.reload();
+
+    }
+
+
+
+    function handleSaveChanges(formId, questionId, inputElement, optionElements, correctAnswerInput) {
+      const updatedQuestionText = inputElement.value;
+      const updatedOptions = optionElements.map((element) => element.value);
+      const correctAnswerIndex = parseInt(correctAnswerInput.value);
+      const formData = {
+        formName: '', 
+        question: updatedQuestionText,
+        options: updatedOptions,
+        correctAnswerIndex: correctAnswerIndex, 
+        formId: formId,
+        questionId: questionId,
+      };
+
+
+      fetch('/update-question', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Failed to update data on the server.');
+          }
+        })
+        .then((updatedResponse) => {
+          // Handle the response from the server if needed
+          console.log('Data updated on the server:', updatedResponse);
+        })
+        .catch((error) => {
+          console.error('Error updating data:', error);
+        });
+    }
+
+
+    fetchData();
+  </script>
+</body>
+
+</html>

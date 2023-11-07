@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Create a Form - Google Forms Clone</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 20px;
+      background-color: #121212; 
+      color: #ffffff; 
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #1e1e1e; 
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); 
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 36px;
+      margin: 0;
+      color: #663ab5; 
+    }
+
+    .form-builder {
+      margin-bottom: 20px;
+    }
+
+    .form-builder label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 18px;
+      color: #ffffff; 
+    }
+
+    .form-builder input {
+      width: calc(100% - 22px);
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px; 
+      border-radius: 5px;
+      background-color: #ffffff; 
+    }
+
+    .options-container {
+      margin-bottom: 10px;
+    }
+
+    .options-container label {
+      display: block;
+      color: #ffffff; 
+      font-weight: bold;
+    }
+
+    .options-container input {
+      width: calc(80% - 22px);
+      padding: 5px;
+      margin-bottom: 5px; 
+      border-radius: 5px;
+      background-color: #ffffff; 
+    }
+
+    .add-option-button {
+      padding: 5px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      background-color: #663ab5; 
+      color: #ffffff; 
+      border: none;
+      border-radius: 5px;
+    }
+
+    .add-option-button:hover {
+      background-color: #452286; 
+    }
+
+    .add-button {
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #663ab5; 
+      color: #ffffff; 
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .add-button:hover {
+      background-color: #452286; 
+    }
+    
+     .options-container input[type="text"] {
+      width: calc(80% - 22px);
+      padding: 5px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      background-color: #ffffff;
+      color: #000000;
+    }
+
+    .options-container input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 id="form-heading">Create a Form</h1>
+    </div>
+    <div class="form-builder">
+      <label for="formName">Form Name:</label>
+      <input type="text" id="formName" placeholder="Enter the form name">
+      <label for="question">Question:</label>
+      <input type="text" id="question" placeholder="Enter your question">
+      <div class="options-container" id="options-container">
+        <label for="option1">Options:</label>
+        <input type="text" id="option1" placeholder="Option 1">
+        <input type="checkbox" id="option1Checkbox">
+        <button class="add-option-button" onclick="addOption()">Add Option</button>
+      </div>
+      <button class="add-button" onclick="createQuestion()">Add Question</button>
+    </div>
+
+    <div id="form-link-container"></div>
+    <button id="send-button" class="add-button" onclick="shareFormLink()">Share Link</button>
+
+  </div>
+  <script>
+     let optionCount = [1];  
+
+    function addOption() {
+      const optionsContainer = document.getElementById('options-container');
+      const newOption = document.createElement('input');
+      const newOptionCheckbox = document.createElement('input');
+
+      const currentOptionCount = optionCount.length + 1;
+      optionCount.push(currentOptionCount);
+
+      newOption.type = 'text';
+      newOption.id = `option${currentOptionCount}`;
+      newOption.placeholder = `Option ${currentOptionCount}`;
+
+      newOptionCheckbox.type = 'checkbox';
+      newOptionCheckbox.id = `option${currentOptionCount}Checkbox`;
+
+      optionsContainer.appendChild(newOption);
+      optionsContainer.appendChild(newOptionCheckbox);
+    }
+
+    async function createQuestion() {
+      const formName = document.getElementById('formName').value;
+      const question = document.getElementById('question').value;
+
+      const options = optionCount.map((index) => {
+        const optionText = document.getElementById(`option${index}`).value;
+        const isCorrect = document.getElementById(`option${index}Checkbox`).checked;
+        return { optionText, isCorrect };
+      }).filter((option) => option.optionText.trim() !== '');
+
+      const correctAnswerIndex = options.findIndex((option) => option.isCorrect);
+
+      const response = await fetch('/create-question', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ formName, question, options, correctAnswerIndex }),
+      });
+      
+
+      if (response.ok) {
+        alert('Question created successfully.');
+        const data = await response.json();
+        formId=data.formId;
+        document.getElementById('question').value = '';
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = `
+      <label for="option1">Options:</label>
+      <input type="text" id="option1" placeholder="Option 1">
+      <input type="checkbox" id="option1Checkbox">
+      <button class="add-option-button" onclick="addOption()">Add Option</button>
+    `;
+
+        optionCount = [1];
+      } else {
+        alert('Error creating question.');
+      }
+    }
+
+    /*function shareFormLink() {
+      fetch('/create-question', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ formName: document.getElementById('formName').value })
+      })
+        .then(response => response.json())
+        .then(data => {
+          const formLink = generateFormLink(data.formId);
+          alert(`Share this link: ${formLink}`);
+        })
+        .catch(error => console.error('Error:', error));
+    }*/
+
+    //function shareFormLink() {
+    //    const formLink = generateFormLink(formId);
+    //    displayFormLink(formLink);  // Display the form link
+//}
+async function shareFormLink() {
+      const formLink = generateFormLink(formId);
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Form Link',
+            text: 'Check out this form:',
+            url: formLink,
+          });
+        } catch (error) {
+          console.error('Error sharing:', error);
+        }
+      } else {
+        displayFormLink(formLink);
+      }
+    }
+
+  function displayFormLink(link) {
+    const formLinkContainer = document.getElementById('form-link-container');
+    formLinkContainer.innerHTML = `
+      <p>Form Link:</p>
+      <a href="${link}" target="_blank">${link}</a>
+    `;
+  }
+
+  function generateFormLink(formId) {
+    return `http://localhost:3000/form/${formId}`;
+  }
+
+    
+  </script>
+</body>
+
+</html>

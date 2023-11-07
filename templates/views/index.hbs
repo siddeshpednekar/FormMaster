@@ -1,0 +1,396 @@
+{{!--
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <style>
+        body {
+            background: #272822;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #00FF00;
+            color: black;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        header p {
+            display: flex;
+            align-items: center;
+        }
+
+        header img {
+            width: 40px;
+            margin-right: 10px;
+        }
+
+        nav {
+            margin-top: 10px;
+        }
+
+        nav a {
+            color: black;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        nav a:hover {
+            cursor: pointer;
+            background-color: rgb(70, 169, 208);
+            border-radius: 5px;
+            padding: 5px 10px;
+        }
+
+        .content-image-container {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .content-container {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            max-width: 600px;
+            color: #F8F8F2;
+        }
+
+        .content-container h1 {
+            margin: 0;
+            margin-top: 20px;
+        }
+
+        .content-container p {
+            margin-top: 0;
+        }
+
+        input[type="button"] {
+            background-color: rgb(70, 169, 208);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .image-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .h2-container {
+            background-color: #f8eded;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .bottom-bar {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+        }
+
+        .bottom-bar p {
+            margin: 0;
+        }
+
+        .social-icons a {
+            color: white;
+            margin-right: 10px;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            opacity: 0.8;
+        }
+
+        /* Media Queries */
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav {
+                margin-top: 10px;
+            }
+
+            nav a {
+                margin: 10px 0;
+            }
+
+            .content-container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <p>
+            <img src="https://kstatic.googleusercontent.com/files/9f04faac24aed8bf8fb381029de951128d1d36373f89675265a6654d0c47b74b2d83a26b68b834ce2eea3bfe8001966f76895888138f135a81d099fc207c73bb"
+                alt="forms icon" />Form Master
+        </p>
+        <nav>
+            <a href="/">Sign in/Sign up</a>
+        </nav>
+    </header>
+    <hr>
+    <div class="content-image-container">
+        <div class="content-container">
+            <h1>Welcome to Form Master</h1>
+            <p>This is a platform that gives you the opportunity to connect with people around the world and get their
+                valuable responses.</p>
+            <h1>Let's Start with the Forms</h1>
+            <button type="button"><a href="/forms">Get started</a></button>
+        </div>
+        <div class="image-container">
+            <img src="https://lh3.googleusercontent.com/2rCFgkURXqqG-mVfgBK6xsTuLa7mzW16llzimAl2uGBkJz0ZgPttQ7JWaHF8i93jD2fpmowLdal6LaNLuLhHTRkPbNfp4K0iCC-RkGywoSzUJvKlk5w=w0-l80-sg-rj-c0xffffff"
+                alt="Forms Analysis Image">
+        </div>
+    </div>
+    <div class="h2-container">
+        <h2>How To Use</h2>
+        <p>1] Create Account</p>
+        <p>2] Log in</p>
+        <p>3] Create Form</p>
+        <p>4] Save It</p>
+        <p>5] Share Link</p>
+        <p>6] Get Responses</p>
+    </div>
+    <div class="bottom-bar">
+        <div>
+            <p>&copy; 2023 Your Company</p>
+        </div>
+        <div class="social-icons">
+            <a href="#"><i class="fa fa-facebook"></i></a>
+            <a href="#"><i class="fa fa-twitter"></i></a>
+            <a href="#"><i class="fa fa-linkedin"></i></a>
+            <a href="#"><i class="fa fa-github"></i></a>
+            <a href="#">Contact</a>
+        </div>
+    </div>
+</body>
+
+</html> --}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Master</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('/bg4.jpg');
+            background-blend-mode: darken;
+            background-repeat: no-repeat;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 100% 10%;
+            }
+        }
+
+        header {
+            display: flex;
+            text-align: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            color: white;
+            animation: fadeIn 1.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            width: 70%;
+            justify-content: flex-end;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li {
+            display: inline;
+            margin-right: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        nav li:hover {
+            transform: scale(1.1);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+        .content {
+            text-align: center;
+            padding: 50px;
+            animation: slideIn 1.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #ffffff;
+        }
+
+        p {
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .get-started-button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #4285f4;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .get-started-button:hover {
+            background-color: #357ae8;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 1.5s ease;
+        }
+
+        footer p {
+            margin: 0;
+            color: #ffffff;
+        }
+
+        #logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 30px;
+            padding: 0px 5px;
+        }
+
+        #logo img {
+            max-width: 50px;
+            max-height: 50px;
+            margin-right: 10px;
+            transform: rotate(0deg);
+            transition: transform 0.5s ease;
+        }
+
+        #logo h3 {
+            font-size: 24px;
+        }
+
+        #logo:hover img {
+            transform: rotate(360deg);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div id="logo">
+            <img src="https://kstatic.googleusercontent.com/files/9f04faac24aed8bf8fb381029de951128d1d36373f89675265a6654d0c47b74b2d83a26b68b834ce2eea3bfe8001966f76895888138f135a81d099fc207c73bb"
+                alt="forms icon" />
+            <h3>FormMaster</h3>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Signin/Signup</a></li>
+                <li><a href="/user">View Forms</a></li>
+                <li><a href="#">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="content">
+        <h1>Welcome to Form Master</h1>
+        <p>Create beautiful forms effortlessly with Form Master. Get started now!</p>
+        <a href="/forms" class="get-started-button">Get Started</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Form Master. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Form View</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background-color: #121212;
+      /* Dark background color */
+      color: #ffffff;
+      /* Text color */
+    }
+
+    .container {
+      max-width: 50vw;
+      margin: 13px auto;
+      border-top: 12px solid #663ab5;
+      border-radius: 10px;
+      background-color: #1e1e1e;
+      padding: 30px;
+      font-size: 16px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .container h1 {
+      font-size: 25px;
+      margin-bottom: 20px;
+      color: #663ab5;
+    }
+
+    .container p {
+      margin: 10px 0;
+    }
+
+    .container h4 {
+      color: #ff3333;
+      margin: 10px 0;
+    }
+
+    .container input[type="text"],
+    .container input[type="email"] {
+      border: none;
+      border-bottom: 1px solid #cccccc;
+      width: 90%;
+      padding: 10px;
+      background-color: #2a2a2a;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .options {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .options label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .options input[type="checkbox"] {
+      margin-right: 10px;
+    }
+
+    .options h3 {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .container button {
+      padding: 15px 30px;
+      border-radius: 5px;
+      background-color: #663ab5;
+      border: none;
+      color: #ffffff;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .container button:hover {
+      background-color: #452286;
+    }
+
+    .rule,
+    .policy {
+      font-size: 13px;
+      color: #cccccc;
+      margin-top: 15px;
+    }
+
+    .policy a {
+      text-decoration: none;
+      color: #663ab5;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>{{formName}}</h1> 
+    <p>All the Submissions to this form will be appended into a table as signatures in the style of an open letter.</p>
+    <h4>* Required</h4>
+    <form>
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name"><br>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email"><br>
+
+      <div class="question">
+        <ul class="options">
+          {{#each questions}}
+          <li>
+            <h3>{{question_text}}</h3>
+            {{#each options}}
+            <label>
+              <input type="checkbox" name="{{question_id}}" value="{{this.option_id}}" id="{{@index}}">
+              {{this.option_text}}
+            </label>
+            {{/each}}
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+
+      <button type="button" onclick="submitResponse()">Submit Response</button>
+
+    </form>
+    <button id="viewResponsesButton">View Responses</button>
+    <h4>Ask a Question</h4>
+    <form>
+      <label for="question">Your Question:</label>
+      <input type="text" id="question" name="question"><br>
+      <button type="button" onclick="askQuestion()">Ask Question</button>
+    </form>
+
+
+    <p class="rule">Never submit passwords through this form.</p>
+    <p class="policy">
+      This content is neither created nor endorsed by Google.
+      <a href="#">Report Abuse</a>, <a href="#">Terms of condition</a>, <a href="#">Privacy Policy</a>.
+    </p>
+  </div>
+  <script>
+    const selectedResponses = []; 
+    async function submitResponse() {
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+
+      if (!name || !email) {
+        alert('Please provide both name and email.');
+        return;
+      }
+
+      const emailExists = selectedResponses.some(response => response.email === email);
+      if (emailExists) {
+        alert('You have already submitted a response with this email.');
+        return;
+      }
+      const selectedOptions = document.querySelectorAll('input[type="checkbox"]:checked');
+
+      if (selectedOptions.length === 0) {
+        alert('Please select at least one option.');
+        return;
+      }
+      const responseTime = new Date().toISOString().slice(0, 19).replace("T", " ");
+      console.log(responseTime)
+      selectedOptions.forEach(option => {
+        const question_id = option.name; // Extract question_id from input name
+        const option_id = option.value;
+        const correct = option.id;// Extract option_id from selected option
+        const user_id = 21; // Replace with the actual user ID
+        selectedResponses.push({ question_id, option_id, correct, user_id, name, email, responseTime });
+      });
+
+      console.log("Selected Responses:", selectedResponses);
+
+      sendResponsesToServer();
+    }
+
+    async function sendResponsesToServer() {
+      try {
+        const response = await fetch('http://localhost:3000/submit-response', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ responses: selectedResponses }) // Wrap responses in an object
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const responseData = await response.json();
+        console.log('Server Response:', responseData);
+      } catch (error) {
+        console.error('Error submitting response:', error);
+      }
+    }
+    document.getElementById('viewResponsesButton').addEventListener('click', function () {
+      const pathSegments = window.location.pathname.split('/');
+      const formId = pathSegments[pathSegments.length - 1];
+      window.location.href = `http://localhost:3000/response/${formId}`;
+    });
+
+async function askQuestion() {
+  const questionText = document.getElementById('question').value;
+  const pathSegment = window.location.pathname.split('/');
+  const formId1 = pathSegment[pathSegment.length - 1];
+  if (!questionText) {
+    alert('Please provide a question.');
+    return;
+  }
+
+  const response = await fetch('http://localhost:3000/ask-question', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ questionText,formId1 }),
+  });
+
+  if (!response.ok) {
+    alert('Error asking the question.');
+    return;
+  }
+
+  alert('Question submitted successfully.');
+  document.getElementById('question').value = ''; // Clear the input field
+}
+
+
+  </script>
+</body>
+
+</html>
