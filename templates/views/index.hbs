@@ -363,6 +363,49 @@
         #logo:hover img {
             transform: rotate(360deg);
         }
+
+        /* Media Queries */
+        @media (max-width: 600px) {
+            nav {
+                width: 100%; /* Adjust width for small screens */
+            }
+
+            .content {
+                padding: 10px; /* Adjust padding for small screens */
+            }
+
+            h1 {
+                font-size: 16px; /* Adjust font size for small screens */
+            }
+
+            p {
+                font-size: 14px; /* Adjust font size for small screens */
+            }
+
+            .get-started-button {
+                padding: 10px 20px; /* Adjust padding for small screens */
+                font-size: 16px; /* Adjust font size for small screens */
+            }
+
+            footer {
+                padding: 10px; /* Adjust padding for small screens */
+            }
+
+            #logo {
+                margin-right: 10px; /* Adjust margin for small screens */
+                padding: 0px 5px; /* Adjust padding for small screens */
+            }
+
+            #logo img {
+                max-width: 40px; /* Adjust max-width for small screens */
+                max-height: 40px; /* Adjust max-height for small screens */
+                margin-right: 5px; /* Adjust margin for small screens */
+            }
+
+            #logo h3 {
+                font-size: 18px; /* Adjust font size for small screens */
+            }
+        }
     </style>
 </head>
 
@@ -375,9 +418,8 @@
         </div>
         <nav>
             <ul>
-                <li><a href="/">Signin/Signup</a></li>
+                <li><a href="/">Home</a></li>
                 <li><a href="/user">View Forms</a></li>
-                <li><a href="#">Home</a></li>
             </ul>
         </nav>
     </header>

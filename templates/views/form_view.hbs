@@ -175,7 +175,7 @@
       selectedOptions.forEach(option => {
         const question_id = option.name; // Extract question_id from input name
         const option_id = option.value;
-        const correct = option.id;// Extract option_id from selected option
+        const correct  = option.checked ? 1 : 0;// Extract option_id from selected option
         const user_id = 21; // Replace with the actual user ID
         selectedResponses.push({ question_id, option_id, correct, user_id, name, email, responseTime });
       });

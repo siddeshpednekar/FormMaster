@@ -418,7 +418,7 @@ app.post("/create-question", async (req, res) => {
                 const optionValues = options.map((option, index) => [
                     questionId, // question_id
                     option.optionText, // option_text
-                    correctAnswerIndex // is_correct based on correctAnswerIndex
+                    correctAnswerIndex==index?1:0 // is_correct based on correctAnswerIndex
                 ]);
 
                 console.log("optionValues", optionValues)
@@ -452,7 +452,7 @@ app.post("/create-question", async (req, res) => {
                     const optionValues = options.map((option, index) => [
                         questionId, // question_id
                         option.optionText, // option_text
-                        correctAnswerIndex // is_correct based on correctAnswerIndex
+                        correctAnswerIndex==index?1:0 // is_correct based on correctAnswerIndex
                     ]);
                     console.log(optionValues);
                     con.query("INSERT INTO options (question_id, option_text, is_correct) VALUES ?", [optionValues], (error, results) => {
@@ -571,15 +571,25 @@ app.get('/get-responses/:formId', async (req, res) => {
     console.log(formId); // Get the form_id from the URL parameter
 
     const query = `
-    SELECT r.*, COUNT(R2.user_id) AS num_questions_answered
-    FROM responses R
-    JOIN questions Q ON R.question_id = Q.question_id
-    JOIN options O ON R.option_id = O.option_id
-    LEFT JOIN responses R2 ON R.user_id = R2.user_id
-    WHERE O.is_correct = R.correct
-      AND Q.form_id = ?
-    GROUP BY R.user_id, r.response_time
-    ORDER BY num_questions_answered DESC, response_time;
+    SELECT
+  R.*,
+  COUNT(R2.user_id) AS num_questions_answered,
+  COUNT(CASE WHEN O.is_correct = R.correct THEN 1 ELSE NULL END) AS num_correct_answers
+FROM
+  responses R
+JOIN
+  questions Q ON R.question_id = Q.question_id
+JOIN
+  options O ON R.option_id = O.option_id
+LEFT JOIN
+  responses R2 ON R.user_id = R2.user_id
+WHERE
+  Q.form_id = ?
+GROUP BY
+  R.user_id, R.response_time
+ORDER BY
+  num_correct_answers DESC, num_questions_answered DESC, R.response_time;
+
     
     `;
 
@@ -735,7 +745,7 @@ app.post("/update-question", async (req, res) => {
                     const optionValues = options.map((option, index) => [
                         questionId, // question_id
                         option, // option_text
-                        correctAnswerIndex, // is_correct based on correctAnswerIndex
+                        correctAnswerIndex==index?1:0, // is_correct based on correctAnswerIndex
                     ]);
 
                     con.query(
