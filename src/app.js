@@ -193,7 +193,7 @@ app.post("/send-otp", (req, res) => {
         port: 587,
         auth: {
             user: 'pednekarprashant399@gmail.com',
-            pass: 'knvlncmsuofcmlfp'
+            pass: ' '
         }
     });
 
@@ -243,7 +243,7 @@ app.post("/send-otp", (req, res) => {
         service: 'Gmail',
         auth: {
             user: 'pednekarprashant399@gmail.com',
-            pass: 'knvlncmsuofcmlfp'
+            pass: ' '
         }
     });
 
@@ -275,7 +275,7 @@ app.post("/forgotpassword", (req, res) => {
         service: 'Gmail',
         auth: {
             user: 'pednekarprashant399@gmail.com',
-            pass: 'knvlncmsuofcmlfp'
+            pass: ' '
         }
     });
 
@@ -686,7 +686,7 @@ app.post('/ask-question', (req, res) => {
                 port: 587,
                 auth: {
                     user: 'pednekarprashant399@gmail.com',
-                    pass: 'knvlncmsuofcmlfp'
+                    pass: ' '
                 }
             });
 
